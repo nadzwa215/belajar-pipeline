@@ -24,7 +24,7 @@ build-job:
   tags:
     - docker
 
-# -------------------- STAGE 2: DEPLOY --------------------
+# -------------------- STAGE 2: DEPLOY --------------
 deploy-job:
   stage: deploy
   image: alpine:latest
