@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Belajar Pipeline CI/CD</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Selamat!</h1>
+        <p>Aplikasi ini di-deploy menggunakan Pipeline CI/CD</p>
+        <div class="info">
+            <p>Status: <span id="status">Running</span></p>
+            <p>Timestamp: <span id="timestamp"></span></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html>

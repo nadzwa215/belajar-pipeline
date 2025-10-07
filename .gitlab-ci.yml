@@ -1,0 +1,38 @@
+# Pipeline Configuration
+stages:
+  - build
+  - deploy
+
+# -------------------- STAGE 1: BUILD --------------------
+build-job:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:latest
+  before_script:
+    # Login ke GitLab Container Registry
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  script:
+    - echo "🛠️ Building Docker image..."
+    - docker build -t $IMAGE_TAG .
+    - echo "📤 Pushing image to registry..."
+    - docker push $IMAGE_TAG
+  only:
+    - main
+  tags:
+    - docker
+
+# -------------------- STAGE 2: DEPLOY --------------------
+deploy-job:
+  stage: deploy
+  image: alpine:latest
+  script:
+    - echo "🚀 Deploying application..."
+    - echo "Website akan di-deploy otomatis oleh GitLab Pages"
+    - echo "Deployment selesai pada: $(date)"
+  only:
+    - main
+  dependencies:
+    - build-job
