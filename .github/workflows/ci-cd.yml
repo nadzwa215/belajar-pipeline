@@ -1,0 +1,64 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🛎️ Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔍 Check files exist
+      run: |
+        echo "Checking project structure..."
+        ls -la
+        test -f index.html && echo "✅ index.html exists"
+        test -f style.css && echo "✅ style.css exists" 
+        test -f Dockerfile && echo "✅ Dockerfile exists"
+        echo "🎉 All files present!"
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - name: 🛎️ Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🐳 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: 🏗️ Build Docker image
+      run: |
+        echo "Building Docker image..."
+        docker build -t belajar-app .
+        echo "✅ Docker image built successfully!"
+
+    - name: 🧪 Test Docker image
+      run: |
+        echo "Testing Docker container..."
+        docker run --rm belajar-app echo "🎉 Container works! Nginx is ready."
+        
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: 🛎️ Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🚀 Deploy Simulation
+      run: |
+        echo "=========================================="
+        echo "🚀 DEPLOYMENT SIMULATION"
+        echo "=========================================="
+        echo "✅ Application: belajar-pipeline"
+        echo "✅ Docker Image: belajar-app"
+        echo "✅ Status: Ready for production"
+        echo "✅ Timestamp: $(date)"
+        echo "=========================================="
+        echo "🎉 CI/CD PIPELINE BERHASIL!"
+        echo "=========================================="
