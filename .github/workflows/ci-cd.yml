@@ -1,113 +1,26 @@
-name: Advanced CI/CD Pipeline with Multiple Displays
-
-on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
-
-jobs:
-  test:
+  # ✅ JOB BARU: AUTO DEPLOY KE KUBERNETES
+  deploy-kubernetes:
     runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'  # Hanya deploy dari main branch
+    
     steps:
     - name: 🛎️ Checkout code
       uses: actions/checkout@v4
 
-    - name: 🔍 Run Tests
+    - name: 🔐 Setup Kubernetes
+      uses: azure/setup-kubectl@v3
+      
+    - name: 📁 Setup KUBECONFIG
       run: |
-        echo "🧪 Testing all display files..."
-        test -f index.html && echo "✅ index.html exists"
-        test -f sarah-display.html && echo "✅ sarah-display.html exists"
-        test -f jules-display.html && echo "✅ jules-display.html exists"
-        test -f style.css && echo "✅ style.css exists"
-        echo "🎉 All display files present!"
+        mkdir -p ~/.kube
+        echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+        kubectl cluster-info
 
-  build:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-    - name: 🛎️ Checkout code
-      uses: actions/checkout@v4
-
-    - name: 🏗️ Build Docker Image
+    - name: 🚀 Deploy to Rancher
       run: |
-        echo "🐳 Building Docker image with all displays..."
-        docker build -t belajar-app-multi .
-        echo "✅ Docker image built with 3 different views!"
-
-  # STAGING DEPLOYMENT (Steven - Default View)
-  deploy-staging:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/develop'
-    environment: staging
-    steps:
-    - name: 🚀 Deploy to Staging (Steven)
-      run: |
-        echo "========================================"
-        echo "🚀 DEPLOYING TO STAGING - STEVEN'S DISPLAY"
-        echo "========================================"
-        echo "🎯 Display: Steven's Monitor"
-        echo "📊 View: Default (index.html)"
-        echo "🌐 Access URL: https://staging.your-app.com"
-        echo "📁 Primary File: index.html"
-        echo "✅ Staging deployment ready for Steven!"
-        echo "========================================"
-
-  # PRODUCTION DEPLOYMENT - SARAH'S METRICS DASHBOARD
-  deploy-sarah-metrics:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    environment: production
-    steps:
-    - name: 📊 Deploy Sarah's Metrics Dashboard
-      run: |
-        echo "========================================"
-        echo "📊 DEPLOYING SARAH'S METRICS DASHBOARD"
-        echo "========================================"
-        echo "🎯 Display: Sarah's Performance Monitor"
-        echo "📊 View: Metrics Dashboard"
-        echo "🌐 Access URL: https://prod.your-app.com/sarah-display.html"
-        echo "📁 Primary File: sarah-display.html"
-        echo "📈 Features: Response Time, Uptime, Active Users, Error Rate"
-        echo "✅ Sarah's Metrics Dashboard deployed!"
-        echo "========================================"
-
-  # PRODUCTION DEPLOYMENT - JULES'S SHOW-METER
-  deploy-jules-showmeter:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main'
-    environment: production  
-    steps:
-    - name: 🎪 Deploy Jules's Show-meter
-      run: |
-        echo "========================================"
-        echo "🎪 DEPLOYING JULES'S SHOW-METER"
-        echo "========================================"
-        echo "🎯 Display: Jules's Performance Show-meter"
-        echo "📊 View: Live Performance Visualization"
-        echo "🌐 Access URL: https://prod.your-app.com/jules-display.html"
-        echo "📁 Primary File: jules-display.html"
-        echo "📈 Features: Performance Gauge, CPU/Memory Metrics, Live Updates"
-        echo "✅ Jules's Show-meter deployed!"
-        echo "========================================"
-
-  # FINAL VERIFICATION
-  verify-deployment:
-    runs-on: ubuntu-latest
-    needs: [deploy-staging, deploy-sarah-metrics, deploy-jules-showmeter]
-    if: always()
-    steps:
-    - name: ✅ Verify All Deployments
-      run: |
-        echo "========================================"
-        echo "✅ DEPLOYMENT VERIFICATION COMPLETE"
-        echo "========================================"
-        echo "🎯 Staging (Steven): DEFAULT VIEW ✅"
-        echo "📊 Production (Sarah): METRICS DASHBOARD ✅" 
-        echo "🎪 Production (Jules): SHOW-METER DISPLAY ✅"
-        echo "========================================"
-        echo "🎉 ALL DISPLAYS DEPLOYED SUCCESSFULLY!"
-        echo "========================================"
+        echo "🔧 Deploying to Rancher Kubernetes..."
+        kubectl apply -f kubc/first-app.yaml
+        kubectl rollout status deployment/steven-display
+        kubectl get pods
+        echo "✅ Deployed to Kubernetes!"
