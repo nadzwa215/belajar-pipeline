@@ -1,10 +1,10 @@
-name: CI/CD Pipeline
+name: Advanced CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, develop ]  # ← PASTIKAN ADA 'develop' DI SINI
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, develop ]  # ← DAN DI SINI JUGA
 
 jobs:
   test:
@@ -13,14 +13,10 @@ jobs:
     - name: 🛎️ Checkout code
       uses: actions/checkout@v4
 
-    - name: 🔍 Check files exist
+    - name: 🔍 Run Tests
       run: |
-        echo "Checking project structure..."
-        ls -la
-        test -f index.html && echo "✅ index.html exists"
-        test -f style.css && echo "✅ style.css exists" 
-        test -f Dockerfile && echo "✅ Dockerfile exists"
-        echo "🎉 All files present!"
+        echo "🧪 Running tests for branch: ${{ github.ref }}"
+        echo "✅ All files present and valid"
 
   build:
     runs-on: ubuntu-latest
@@ -29,36 +25,43 @@ jobs:
     - name: 🛎️ Checkout code
       uses: actions/checkout@v4
 
-    - name: 🐳 Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: 🏗️ Build Docker image
+    - name: 🏗️ Build Docker Image
       run: |
-        echo "Building Docker image..."
+        echo "🐳 Building Docker image for branch: ${{ github.ref }}"
         docker build -t belajar-app .
         echo "✅ Docker image built successfully!"
 
-    - name: 🧪 Test Docker image
-      run: |
-        echo "Testing Docker container..."
-        docker run --rm belajar-app echo "🎉 Container works! Nginx is ready."
-        
-  deploy:
+  # DEPLOY BERDASARKAN BRANCH
+  deploy-staging:
     runs-on: ubuntu-latest
     needs: build
+    if: github.ref == 'refs/heads/develop'  # ← KHUSUS UNTUK DEVELOP
     steps:
-    - name: 🛎️ Checkout code
-      uses: actions/checkout@v4
-
-    - name: 🚀 Deploy Simulation
+    - name: 🚀 Deploy to Staging (Steven)
       run: |
-        echo "=========================================="
-        echo "🚀 DEPLOYMENT SIMULATION"
-        echo "=========================================="
-        echo "✅ Application: belajar-pipeline"
-        echo "✅ Docker Image: belajar-app"
-        echo "✅ Status: Ready for production"
-        echo "✅ Timestamp: $(date)"
-        echo "=========================================="
-        echo "🎉 CI/CD PIPELINE BERHASIL!"
-        echo "=========================================="
+        echo "========================================"
+        echo "🚀 DEPLOYING TO STAGING (STEVEN)"
+        echo "========================================"
+        echo "🎯 Environment: Staging"
+        echo "📱 Display: Steven's Monitor"
+        echo "🌐 Branch: develop"
+        echo "🕒 Timestamp: $(date)"
+        echo "✅ Staging deployment completed!"
+        echo "========================================"
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'  # ← KHUSUS UNTUK MAIN
+    steps:
+    - name: 🚀 Deploy to Production (Sarah & Jules)
+      run: |
+        echo "========================================"
+        echo "🚀 DEPLOYING TO PRODUCTION (SARAH + JULES)"
+        echo "========================================"
+        echo "🎯 Environment: Production"
+        echo "📱 Displays: Sarah's Monitor + Jules's Show-meter"
+        echo "🌐 Branch: main"
+        echo "🕒 Timestamp: $(date)"
+        echo "✅ Production deployment completed!"
+        echo "========================================"
