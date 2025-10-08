@@ -1,20 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Belajar Pipeline CI/CD</title>
+    <title>Belajar Pipeline CI/CD - Multi Environment</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>🎉 Selamat!</h1>
-        <p>Aplikasi ini di-deploy menggunakan Pipeline CI/CD</p>
+        <div class="environment-banner" id="env-banner">
+            <h2>Environment: <span id="env-name">DEVELOPMENT</span></h2>
+        </div>
+        
+        <h1>🎉 CI/CD Multi-Environment!</h1>
+        <p>Aplikasi ini berjalan di environment berbeda berdasarkan branch</p>
+        
         <div class="info">
             <p>Status: <span id="status">Running</span></p>
+            <p>Branch: <span id="branch">feature/improved-design</span></p>
             <p>Timestamp: <span id="timestamp"></span></p>
+        </div>
+
+        <div class="displays">
+            <div class="display-card">
+                <h3>🔄 Development Flow</h3>
+                <p>Feature Branch → Develop (Staging) → Main (Production)</p>
+            </div>
         </div>
     </div>
     <script>
         document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        
+        // Dynamic environment styling
+        const envBanner = document.getElementById('env-banner');
+        const envName = document.getElementById('env-name');
+        
+        // Logic untuk detect environment berdasarkan URL atau config
+        // Untuk sekarang, kita set manual berdasarkan branch name
+        envName.textContent = 'FEATURE/improved-design';
+        envBanner.style.background = 'linear-gradient(135deg, #ffd700 0%, #ff8c00 100%)';
     </script>
 </body>
 </html>
