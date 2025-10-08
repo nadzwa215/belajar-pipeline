@@ -1,4 +1,4 @@
-  # ✅ JOB BARU: AUTO DEPLOY KE KUBERNETES
+  # 🚀 AUTO DEPLOY KE KUBERNETES RANCHER
   deploy-kubernetes:
     runs-on: ubuntu-latest
     needs: build
@@ -16,11 +16,25 @@
         mkdir -p ~/.kube
         echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
         kubectl cluster-info
+        echo "✅ Connected to Rancher Kubernetes!"
 
     - name: 🚀 Deploy to Rancher
       run: |
-        echo "🔧 Deploying to Rancher Kubernetes..."
+        echo "========================================"
+        echo "🚀 DEPLOYING TO RANCHER KUBERNETES"
+        echo "========================================"
         kubectl apply -f kubc/first-app.yaml
-        kubectl rollout status deployment/steven-display
-        kubectl get pods
-        echo "✅ Deployed to Kubernetes!"
+        kubectl rollout status deployment/steven-display --timeout=180s
+        kubectl get deployments
+        kubectl get services
+        kubectl get pods -l app=steven-display
+        echo "✅ Successfully deployed to Rancher Kubernetes!"
+        echo "========================================"
+
+    - name: 📊 Deployment Info
+      run: |
+        echo "🎉 FULLY AUTOMATED DEPLOYMENT COMPLETE!"
+        echo "🌐 Cluster: Rancher Desktop"
+        echo "📱 Application: Steven Display"
+        echo "🔗 Access: kubectl port-forward service/steven-service 8080:80"
+        echo "🕒 Timestamp: $(date)"
