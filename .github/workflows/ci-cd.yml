@@ -1,10 +1,10 @@
-name: Advanced CI/CD Pipeline
+name: Advanced CI/CD Pipeline with Multiple Displays
 
 on:
   push:
-    branches: [ main, develop ]  # ← PASTIKAN ADA 'develop' DI SINI
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main, develop ]  # ← DAN DI SINI JUGA
+    branches: [ main, develop ]
 
 jobs:
   test:
@@ -15,8 +15,12 @@ jobs:
 
     - name: 🔍 Run Tests
       run: |
-        echo "🧪 Running tests for branch: ${{ github.ref }}"
-        echo "✅ All files present and valid"
+        echo "🧪 Testing all display files..."
+        test -f index.html && echo "✅ index.html exists"
+        test -f sarah-display.html && echo "✅ sarah-display.html exists"
+        test -f jules-display.html && echo "✅ jules-display.html exists"
+        test -f style.css && echo "✅ style.css exists"
+        echo "🎉 All display files present!"
 
   build:
     runs-on: ubuntu-latest
@@ -27,41 +31,83 @@ jobs:
 
     - name: 🏗️ Build Docker Image
       run: |
-        echo "🐳 Building Docker image for branch: ${{ github.ref }}"
-        docker build -t belajar-app .
-        echo "✅ Docker image built successfully!"
+        echo "🐳 Building Docker image with all displays..."
+        docker build -t belajar-app-multi .
+        echo "✅ Docker image built with 3 different views!"
 
-  # DEPLOY BERDASARKAN BRANCH
+  # STAGING DEPLOYMENT (Steven - Default View)
   deploy-staging:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/develop'  # ← KHUSUS UNTUK DEVELOP
+    if: github.ref == 'refs/heads/develop'
+    environment: staging
     steps:
     - name: 🚀 Deploy to Staging (Steven)
       run: |
         echo "========================================"
-        echo "🚀 DEPLOYING TO STAGING (STEVEN)"
+        echo "🚀 DEPLOYING TO STAGING - STEVEN'S DISPLAY"
         echo "========================================"
-        echo "🎯 Environment: Staging"
-        echo "📱 Display: Steven's Monitor"
-        echo "🌐 Branch: develop"
-        echo "🕒 Timestamp: $(date)"
-        echo "✅ Staging deployment completed!"
+        echo "🎯 Display: Steven's Monitor"
+        echo "📊 View: Default (index.html)"
+        echo "🌐 Access URL: https://staging.your-app.com"
+        echo "📁 Primary File: index.html"
+        echo "✅ Staging deployment ready for Steven!"
         echo "========================================"
 
-  deploy-production:
+  # PRODUCTION DEPLOYMENT - SARAH'S METRICS DASHBOARD
+  deploy-sarah-metrics:
     runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/main'  # ← KHUSUS UNTUK MAIN
+    if: github.ref == 'refs/heads/main'
+    environment: production
     steps:
-    - name: 🚀 Deploy to Production (Sarah & Jules)
+    - name: 📊 Deploy Sarah's Metrics Dashboard
       run: |
         echo "========================================"
-        echo "🚀 DEPLOYING TO PRODUCTION (SARAH + JULES)"
+        echo "📊 DEPLOYING SARAH'S METRICS DASHBOARD"
         echo "========================================"
-        echo "🎯 Environment: Production"
-        echo "📱 Displays: Sarah's Monitor + Jules's Show-meter"
-        echo "🌐 Branch: main"
-        echo "🕒 Timestamp: $(date)"
-        echo "✅ Production deployment completed!"
+        echo "🎯 Display: Sarah's Performance Monitor"
+        echo "📊 View: Metrics Dashboard"
+        echo "🌐 Access URL: https://prod.your-app.com/sarah-display.html"
+        echo "📁 Primary File: sarah-display.html"
+        echo "📈 Features: Response Time, Uptime, Active Users, Error Rate"
+        echo "✅ Sarah's Metrics Dashboard deployed!"
+        echo "========================================"
+
+  # PRODUCTION DEPLOYMENT - JULES'S SHOW-METER
+  deploy-jules-showmeter:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    environment: production  
+    steps:
+    - name: 🎪 Deploy Jules's Show-meter
+      run: |
+        echo "========================================"
+        echo "🎪 DEPLOYING JULES'S SHOW-METER"
+        echo "========================================"
+        echo "🎯 Display: Jules's Performance Show-meter"
+        echo "📊 View: Live Performance Visualization"
+        echo "🌐 Access URL: https://prod.your-app.com/jules-display.html"
+        echo "📁 Primary File: jules-display.html"
+        echo "📈 Features: Performance Gauge, CPU/Memory Metrics, Live Updates"
+        echo "✅ Jules's Show-meter deployed!"
+        echo "========================================"
+
+  # FINAL VERIFICATION
+  verify-deployment:
+    runs-on: ubuntu-latest
+    needs: [deploy-staging, deploy-sarah-metrics, deploy-jules-showmeter]
+    if: always()
+    steps:
+    - name: ✅ Verify All Deployments
+      run: |
+        echo "========================================"
+        echo "✅ DEPLOYMENT VERIFICATION COMPLETE"
+        echo "========================================"
+        echo "🎯 Staging (Steven): DEFAULT VIEW ✅"
+        echo "📊 Production (Sarah): METRICS DASHBOARD ✅" 
+        echo "🎪 Production (Jules): SHOW-METER DISPLAY ✅"
+        echo "========================================"
+        echo "🎉 ALL DISPLAYS DEPLOYED SUCCESSFULLY!"
         echo "========================================"

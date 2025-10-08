@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jules's Show-meter</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .show-meter {
+            background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        .performance-gauge {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(#4cd964 0% 75%, #ffcc00 75% 90%, #ff3b30 90% 100%);
+            margin: 2rem auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+        .live-indicator {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="environment-banner" style="background: linear-gradient(135deg, #8e2de2 0%, #4a00e0 100%);">
+            <h2>🎪 Jules's Show-meter - PRODUCTION</h2>
+        </div>
+        
+        <div class="show-meter">
+            <h1>🎯 Performance Show-meter</h1>
+            <p>Live system performance visualization</p>
+            
+            <div class="performance-gauge">
+                <span>85%</span>
+            </div>
+            
+            <div class="live-indicator">
+                <h3>🔴 LIVE PERFORMANCE METRICS</h3>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem;">
+                <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px;">
+                    <h4>CPU Usage</h4>
+                    <div style="font-size: 1.5rem; font-weight: bold;">42%</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px;">
+                    <h4>Memory</h4>
+                    <div style="font-size: 1.5rem; font-weight: bold;">68%</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px;">
+                    <h4>Network I/O</h4>
+                    <div style="font-size: 1.5rem; font-weight: bold;">1.2 Gbps</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.2); padding: 1rem; border-radius: 8px;">
+                    <h4>Disk Space</h4>
+                    <div style="font-size: 1.5rem; font-weight: bold;">45%</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info">
+            <p>Last Updated: <span id="timestamp"></span></p>
+            <p>Environment: <strong>Production - Jules's Show-meter</strong></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        
+        // Simulate live performance updates
+        setInterval(() => {
+            const gauge = document.querySelector('.performance-gauge span');
+            const newValue = Math.random() * 30 + 70;
+            gauge.textContent = Math.round(newValue) + '%';
+            
+            // Update gauge color based on performance
+            const gaugeElement = document.querySelector('.performance-gauge');
+            if (newValue > 80) {
+                gaugeElement.style.background = 'conic-gradient(#4cd964 0% 100%)';
+            } else if (newValue > 60) {
+                gaugeElement.style.background = 'conic-gradient(#4cd964 0% 75%, #ffcc00 75% 100%)';
+            } else {
+                gaugeElement.style.background = 'conic-gradient(#4cd964 0% 50%, #ffcc00 50% 75%, #ff3b30 75% 100%)';
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

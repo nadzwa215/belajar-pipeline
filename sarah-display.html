@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sarah's Metrics Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .metrics-dashboard {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+        }
+        .metric-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            backdrop-filter: blur(10px);
+        }
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4cd964;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="environment-banner" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);">
+            <h2>📊 Sarah's Metrics Dashboard - PRODUCTION</h2>
+        </div>
+        
+        <div class="metrics-dashboard">
+            <h1>🚀 Production Metrics</h1>
+            <p>Real-time performance monitoring</p>
+            
+            <div class="metric-card">
+                <h3>Response Time</h3>
+                <div class="metric-value">142ms</div>
+                <p>Average API response time</p>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Uptime</h3>
+                <div class="metric-value">99.98%</div>
+                <p>System availability</p>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Active Users</h3>
+                <div class="metric-value">2,847</div>
+                <p>Concurrent users</p>
+            </div>
+            
+            <div class="metric-card">
+                <h3>Error Rate</h3>
+                <div class="metric-value">0.02%</div>
+                <p>Requests with errors</p>
+            </div>
+        </div>
+        
+        <div class="info">
+            <p>Last Updated: <span id="timestamp"></span></p>
+            <p>Environment: <strong>Production - Sarah's Display</strong></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+        
+        // Simulate live metrics updates
+        setInterval(() => {
+            const metrics = document.querySelectorAll('.metric-value');
+            metrics[0].textContent = (Math.random() * 50 + 120).toFixed(0) + 'ms';
+            metrics[2].textContent = (Math.random() * 500 + 2500).toFixed(0);
+        }, 5000);
+    </script>
+</body>
+</html>
