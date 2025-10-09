@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: belajar-app
+  labels:
+    app: belajar-pipeline
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: belajar-pipeline
+  template:
+    metadata:
+      labels:
+        app: belajar-pipeline
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: belajar-service
+spec:
+  selector:
+    app: belajar-pipeline
+  ports:
+  - port: 80
+    targetPort: 80
